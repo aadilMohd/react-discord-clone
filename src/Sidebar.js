@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Sidebar.css";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import AddIcon from "@material-ui/icons/Add";
@@ -13,11 +13,31 @@ import MicIcon  from "@material-ui/icons/Mic";
 import HeadsetIcon  from "@material-ui/icons/Headset";
 
 import SettingsIcon  from "@material-ui/icons/Settings";
+import { useSelector } from "react-redux";
+import { selectUser } from "./features/userSlice";
+import { auth } from "./firebase";
+import { signOut } from "firebase/auth";
+import {db} from './firebase'
 
 
 function Sidebar() {
+
+  const user = useSelector(selectUser)
+
+  const [ channels , setChannels ]= useState([]);
+  // useEffect(()=>{
+  //   db.collection('channels').onSnapShot(snapshot=>{
+  //     setChannels(snapshot.docs.map(doc => ({
+  //       id:doc.id,
+  //       channel:doc.data(),
+  //     })))
+  //   })
+  // })
+
+  
+
   return (
-    <div class="sidebar">
+    <div className="sidebar">
       <div className="sidebar__top">
         <h3>Mohamed Aadil</h3>
         <ExpandMoreIcon />
@@ -42,7 +62,7 @@ function Sidebar() {
       <div className="sidebar__voice">
         <SignalCellularAltIcon
           className="sidebar__voiceIcon"
-          fontsize="large"
+          fontSize="large"
         />
         <div className="sidebar__voiceInfo">
           <h3>Voice Connected</h3>
@@ -54,11 +74,11 @@ function Sidebar() {
         </div>
       </div>
       <div className="sidebar__profile">
-        <Avatar />
+        <Avatar src={user.photo} onClick={()=>{signOut(auth)}}/>
 
         <div className="sidebar__profileInfo">
-          <h3>aadil.mxa</h3>
-          <p>#4046</p>
+          <h3>{user.displayName}</h3>
+          <p>#{user.uid.substring(0,5)}</p>
         </div>
 
         <div className="sidebar__profileIcons">
