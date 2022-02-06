@@ -18,19 +18,49 @@ import { selectUser } from "./features/userSlice";
 import { auth } from "./firebase";
 import { signOut } from "firebase/auth";
 import { db } from "./firebase";
+import { collection, onSnapshot ,doc, setDoc, addDoc } from "firebase/firestore";
 
 function Sidebar() {
   const user = useSelector(selectUser);
 
-  const [channels, setChannels] = useState([]);
+  const [channelsList, setChannels] = useState([]);
+
+  useEffect(()=>{
+
+
+    onSnapshot(collection(db, "channels"), (snapshot) => {
+     setChannels(
+       snapshot.docs.map((doc)=>({
+         id : doc.id,
+         channel : doc.data(),
+       }))
+     )
+  });
+
+    
+  },[])
+
+  
 
   const channelAdd = ()=>{
     const channelname = prompt("Enter a new Channel Name");
     
     if(channelname){
-      // db.collection('channels').add({
-      //   channelName:channelname,
-      // })
+
+      // console.log(channelname)
+
+    const data = {
+
+      channelName : channelname
+
+    }
+
+    addDoc(collection(db,'channels'),data)
+
+    // console.log(channelsList[0].channel.channelName)
+
+
+
     }
   }
   //console.log(db.collection('channels'));
@@ -56,9 +86,7 @@ function Sidebar() {
           <AddIcon onClick={channelAdd} className="sidebar__addChannel" />
         </div>
         <div className="sidebar__channelsList">
-          {channels.map((id,channel) => {
-            <Channel key={id} id={id} channelName={channel}/>;
-})}
+         {channelsList.map(({id, channel})=>(<Channel key={id} id ={id} channelName={channel.channelName}/>))}
         </div>
       </div>
 

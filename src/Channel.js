@@ -6,15 +6,18 @@ import {setChannelId} from './features/appSlice'
 
 function Channel({id,channelName}) {
 
+  console.log(channelName);
+
   const dispatch = useDispatch();
 
-  return <div className='Channel' onCLick={()=>{
-
-    dispatch(setChannelId({
-      channelId:id,
-      channelName: channelName
-    }))
-  }}>
+  return <div className='Channel' onClick={()=>
+      dispatch(
+        setChannelId({
+          channelId:id,
+          channelName:channelName
+        })
+      )
+  }>
       <h4>
 
         <span className='Channel__hash'>#</span> {channelName}
